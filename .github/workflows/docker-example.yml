@@ -1,57 +1,32 @@
-name: "JFrog-GitHubb docker Publish OIDC Integration"
+name: "Setup JFrog CLI OIDC Example2"
 on: push
- 
-# This is required as per
-# https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-cloud-providers#adding-permissions-settings
+
 permissions:
+  # This is required for requesting the OIDC token
   id-token: write
- 
+  # This is required for actions/checkout
+  contents: read
 jobs:
   build:
-     runs-on: ubuntu-latest
-     env:
-      OIDC_AUDIENCE: 'jfrog-github'
-      OIDC_PROVIDER: 'github-oidc'
-      PLATFORM_REPO: 'noffarl-docker-remote'
-     defaults:
-      run:
-        working-directory: ./package
-     steps:
-       - name: Checkout
-         uses: actions/checkout@v4
-              
-       - name: Print Specific Environment Variables
-         run: |
-           echo "OIDC_AUDIENCE is set to: ${{ env.OIDC_AUDIENCE }}"
-           echo "OIDC_PROVIDER is set to: ${{ env.OIDC_PROVIDER }}"
-           echo "JFrog URL is set to: ${{ secrets.JF_URL }}" # Caution: This will print the JFrog URL
-       
-       - name: Print All Environment Variables
-         run: printenv
- 
-       - name: Setup Node npm
-         uses: actions/setup-node@v3
-       - name: Enable Debug
-         run: | 
-           export DEBUG=1
-           export JFROG_CLI_LOG_LEVEL=DEBUG
-   
-       - name: Setup JFrog CLI
-         uses: jfrog/setup-jfrog-cli@v4
-         env:  
-           JF_URL: ${{ secrets.JF_URL }}
-         with:
-           oidc-provider-name: ${{ env.OIDC_PROVIDER }}
-           oidc-audience: ${{ env.OIDC_AUDIENCE }}
-           
- 
-       - name: Docker Login to ART
-         uses: docker/login-action@v3.3.0
-         with:
-          registry: andreygra.jfrog.io
-          username: noffarl@jfrog.com
-          password: Password1*
-       - name: Docker Pull
-         run: docker pull andreygra.jfrog.io/noffarl-docker-remote/library/alpine
-         shell: bash
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v4
+        env:
+          # JFrog platform url (for example: https://acme.jfrog.io)
+          JF_URL: https://elinaf.jfrog.io
+        with:
+          # Name of the OIDC provider as specified on the OIDC integration page in the JFrog Platform
+          oidc-provider-name: roin-oidc
 
+      - name: Docker login to Artifactory
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: elinaf.jfrog.io
+          username: roin
+          password: Password1!
+      - name: docker pull
+        run: docker pull elinaf.jfrog.io/roin-docker-remote/library/alpine
+        shell: bash
