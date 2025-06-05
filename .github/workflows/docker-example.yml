@@ -52,6 +52,6 @@ jobs:
           username: noffarl@jfrog.com
           password: Password1*
        - name: Docker Pull
-         run: docker pull andreygra-noffarl-docker-remote.jfrog.io/library/alpine
+         run: docker pull andreygra.jfrog.io/noffarl-docker-remote/library/alpine
          shell: bash
 
