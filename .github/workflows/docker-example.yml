@@ -52,5 +52,4 @@ jobs:
             
             # Test connection
             jf rt ping
-            jf docker login
-            jf docker pull docker pull andreygra.jfrog.io/noffarl-docker-remote/hello-world
+            jf docker pull docker pull andreygra-noffarl-docker-remote.jfrog.io/hello-world
