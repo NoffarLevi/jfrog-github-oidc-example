@@ -16,17 +16,17 @@ jobs:
         uses: jfrog/setup-jfrog-cli@v4
         env:
           # JFrog platform url (for example: https://acme.jfrog.io)
-          JF_URL: https://andreygra.jfrog.io
+          JF_URL: https://elinaf.jfrog.io
         with:
           # Name of the OIDC provider as specified on the OIDC integration page in the JFrog Platform
-          oidc-provider-name: github-oidc
+          oidc-provider-name: roin-oidc
 
       - name: Docker login to Artifactory
         uses: docker/login-action@v3.3.0
         with:
-          registry: andreygra.jfrog.io
-          username: noffarl@jfrog.com
-          password: Password1*
+          registry: elinaf.jfrog.io
+          username: noffarl
+          password: Password1!
       - name: docker pull
         run: docker pull elinaf.jfrog.io/roin-docker-remote/library/alpine
         shell: bash
