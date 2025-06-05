@@ -24,9 +24,9 @@ jobs:
       - name: Docker login to Artifactory
         uses: docker/login-action@v3.3.0
         with:
-          registry: elinaf.jfrog.io
-          username: roin
-          password: Password1!
+          registry: andreygra.jfrog.io
+          username: noffarl@jfrog.com
+          password: Password1*
       - name: docker pull
         run: docker pull elinaf.jfrog.io/roin-docker-remote/library/alpine
         shell: bash
