@@ -31,6 +31,10 @@ jobs:
  
        - name: Setup Node npm
          uses: actions/setup-node@v3
+       - name: Enable Debug
+         run: | 
+           export DEBUG=1
+           export JFROG_CLI_LOG_LEVEL=DEBUG
    
        - name: Setup JFrog CLI
          uses: jfrog/setup-jfrog-cli@v4
