@@ -30,4 +30,4 @@ jobs:
             # Test connection
             jf rt ping
             jf docker login
-            jf docker pull elinaf.jfrog.io/roin-docker-remote/hello-world
+            jf docker pull elinaf.jfrog.io/roin-docker-remote/library/hello-world
