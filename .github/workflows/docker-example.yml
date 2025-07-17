@@ -46,7 +46,7 @@ jobs:
           ACCESS_TOKEN=$(echo "$RESPONSE" | jq -r '.access_token')
           echo "JFROG_ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
 
-      - name: Run GraphQL Query on JFrog
+      - name: Run GraphQL Query on JFrogg
         run: |
           QUERY='{ "query": "{ system { version } }" }'
           curl -s -X POST https://elinaf.jfrog.io/metadata/api/v1/query \
