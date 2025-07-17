@@ -30,3 +30,8 @@ jobs:
       - name: docker pull
         run: docker pull elinaf.jfrog.io/roin-docker-remote/library/alpine
         shell: bash
+      - name: print token
+        run: |
+          echo "Requesting GitHub OIDC token..."
+          TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL")
+          echo "$TOKEN" | jq .
