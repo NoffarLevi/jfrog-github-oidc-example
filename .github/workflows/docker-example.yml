@@ -52,4 +52,4 @@ jobs:
           curl -s -X POST https://elinaf.jfrog.io/metadata/api/v1/query \
             -H "Authorization: Bearer $JFROG_ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
-            -d '{}'
+            -d "$QUERY"
