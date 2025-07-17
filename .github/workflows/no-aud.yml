@@ -1,0 +1,26 @@
+name: oidc-poc
+on:
+    push:
+        branches:
+            - '*'
+jobs:
+    auth:
+        permissions:
+            contents: read
+            id-token: write
+        runs-on: ubuntu-latest
+        steps:
+
+        - uses: jfrog/setup-jfrog-cli@v4
+          env:
+                JF_URL: https://elinaf.jfrog.io 
+          with:
+                oidc-provider-name: roin-oidc 
+
+        - name: Run GraphQL Queryon JFrogg
+          run: |
+           QUERY='{ "query": "{ system { version } }"}' \
+           jf rt curl -s -X POST https://elinaf.jfrog.io/metadata/api/v1/query \
+            -H "Content-Type: application/json" \
+            -d "$QUERY"
+                
