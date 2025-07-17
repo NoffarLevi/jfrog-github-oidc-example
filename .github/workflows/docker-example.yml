@@ -30,12 +30,26 @@ jobs:
       - name: docker pull
         run: docker pull elinaf.jfrog.io/roin-docker-remote/library/alpine
         shell: bash
-      - name: print token
+      - name: Get GitHub OIDC Token
+        id: get_oidc_token
         run: |
-          echo "Requesting GitHub OIDC token..."
           TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL")
-          echo "$TOKEN" | jq .
           OIDC_TOKEN=$(echo "$TOKEN" | jq -r '.value')
-          echo "Extracted token:"
-          echo "$OIDC_TOKEN"
+          echo "OIDC_TOKEN=$OIDC_TOKEN" >> $GITHUB_ENV
 
+      - name: Exchange OIDC Token for JFrog Access Token
+        id: jfrog_token_exchange
+        run: |
+          RESPONSE=$(curl -s -X POST https://elinaf.jfrog.io/access/api/v1/oidc/token \
+            -H "Content-Type: application/json" \
+            -d "{\"grant_type\":\"urn:ietf:params:oauth:grant-type:token-exchange\", \"subject_token_type\":\"urn:ietf:params:oauth:token-type:id_token\", \"subject_token\":\"$OIDC_TOKEN\", \"provider_name\":\"roin-oidc\"}")
+          ACCESS_TOKEN=$(echo "$RESPONSE" | jq -r '.access_token')
+          echo "JFROG_ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
+
+      - name: Run GraphQL Query on JFrog
+        run: |
+          QUERY='{ "query": "{ system { version } }" }'
+          curl -s -X POST https://elinaf.jfrog.io/graphql \
+            -H "Authorization: Bearer $JFROG_ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$QUERY"
