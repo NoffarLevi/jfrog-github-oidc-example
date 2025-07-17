@@ -49,7 +49,7 @@ jobs:
       - name: Run GraphQL Query on JFrog
         run: |
           QUERY='{ "query": "{ system { version } }" }'
-          curl -s -X POST https://elinaf.jfrog.io/graphql \
+          curl -s -X POST https://elinaf.jfrog.io/metadata/api/v1/query \
             -H "Authorization: Bearer $JFROG_ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "$QUERY"
+            -d '{}'
