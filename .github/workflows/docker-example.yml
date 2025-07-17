@@ -18,7 +18,7 @@ jobs:
       #     # JFrog platform url (for example: https://acme.jfrog.io)
       #     JF_URL: https://elinaf.jfrog.io
       #   with:
-      #     # Name of the OIDC provider as specified on the OIDC integration page in the JFrog Platform
+      #     # Name of the OIDC provider as specified on theOIDC integration page in the JFrog Platform
       #     oidc-provider-name: roin-oidc
 
       # - name: Docker login to Artifactory
