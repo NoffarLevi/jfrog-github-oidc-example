@@ -25,4 +25,4 @@ jobs:
        - name: Initialize Docker container
          run: |
            docker login elinaf.jfrog.io -u ronm -p $ACCESS_TOKEN
-    #       docker pull elinaf.jfrog.io/ronma-docker-remote/hello-world
+    #      docker pull elinaf.jfrog.io/ronma-docker-remote/hello-world
