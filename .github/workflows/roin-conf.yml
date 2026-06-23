@@ -1,25 +1,21 @@
 - uses: jfrog/setup-jfrog-cli@v5.0.0
   id: jfrog-auth
-
- with:
-  oidc-provider-name: sj-ghe
-  oidc-audience: jf
-
+  with:
+    oidc-provider-name: ronma
+    oidc-audience: jf
 
 - env:
-  JFROG_TOKEN: ${{ steps.jfrog-auth.outputs.oidc-token }}
-  JF_URL: https://elinaf.jfrog.io
-
- run: |
-  curl -sS -X POST "${JF_URL}/access/api/v1/tokens" \
-
-   -H "Authorization: Bearer ${JFROG_TOKEN}" \
-   -H "Content-Type: application/json" \
-   -d '{
-    "grant_type": "client_credentials",
-    "username":  "scim_admin",
-    "scope":    "system:identities:r,w,d",
-    "expires_in": 0,
-    "description": "scim-token-probe",
-    "audience":  "*@*"
-   }'
+    JFROG_TOKEN: ${{ steps.jfrog-auth.outputs.oidc-token }}
+    JF_URL: https://elinaf.jfrog.io
+  run: |
+    curl -sS -X POST "${JF_URL}/access/api/v1/tokens" \
+      -H "Authorization: Bearer ${JFROG_TOKEN}" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "grant_type": "client_credentials",
+        "username": "scim_admin",
+        "scope": "system:identities:r,w,d",
+        "expires_in": 0,
+        "description": "scim-token-probe",
+        "audience": "*@*"
+      }'
