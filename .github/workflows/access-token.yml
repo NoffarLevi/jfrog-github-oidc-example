@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write   # required — without this, GitHub won't issue an OIDC token at all
-  contents: read 
+  id-token: write
+  contents: read
 
 jobs:
   repro:
@@ -20,9 +20,8 @@ jobs:
       - env:
           JFROG_TOKEN: ${{ steps.jfrog-auth.outputs.oidc-token }}
           JF_URL: https://elinaf.jfrog.io
-    
         run: |
-          echo "JFROG_TOKEN=${JFROG_TOKEN}"
+          echo "Token length: ${#JFROG_TOKEN}"
           curl -sS -X POST "${JF_URL}/access/api/v1/tokens" \
             -H "Authorization: Bearer ${JFROG_TOKEN}" \
             -H "Content-Type: application/json" \
