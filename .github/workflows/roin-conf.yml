@@ -1,5 +1,5 @@
 - uses: jfrog/setup-jfrog-cli@v5.0.0
- id: jfrog-auth
+  id: jfrog-auth
 
  with:
   oidc-provider-name: sj-ghe
