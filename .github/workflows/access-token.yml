@@ -5,7 +5,7 @@ on:
 
 permissions:
   id-token: write   # required — without this, GitHub won't issue an OIDC token at all
-  contents: read
+  contents: read 
 
 jobs:
   repro:
