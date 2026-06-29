@@ -20,3 +20,10 @@ jobs:
           oidc-provider-name: ronma
           oidc-audience: jf
 
+      - env:
+          JFROG_TOKEN: ${{ steps.jfrog-auth.outputs.oidc-token }}
+        run: |
+          echo "Token length: ${#JFROG_TOKEN}"
+          curl -sS -vvv -L -o downloaded-file \
+            -H "Authorization: Bearer ${JFROG_TOKEN}" \
+            "${JF_URL}/artifactory/example-repo-local/test.txt"
