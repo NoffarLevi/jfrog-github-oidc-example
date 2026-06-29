@@ -19,19 +19,3 @@ jobs:
         with:
           oidc-provider-name: ronma
           oidc-audience: jf
-
-      - env:
-          JFROG_TOKEN: ${{ steps.jfrog-auth.outputs.oidc-token }}
-        run: |
-          echo "Token length: ${#JFROG_TOKEN}"
-          curl -sS -f -vvv -X POST "${JF_URL}/access/api/v1/tokens" \
-            -H "Authorization: Bearer ${JFROG_TOKEN}" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "grant_type": "client_credentials",
-              "username": "scim_admin",
-              "scope": "system:identities:r,w,d",
-              "expires_in": 0,
-              "description": "scim-token-probe",
-              "audience": "*@*"
-            }'
