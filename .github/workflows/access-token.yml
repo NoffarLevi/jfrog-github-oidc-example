@@ -24,6 +24,12 @@ jobs:
           JFROG_TOKEN: ${{ steps.jfrog-auth.outputs.oidc-token }}
         run: |
           echo "Token length: ${#JFROG_TOKEN}"
-          curl -sS -vvv -L -o downloaded-file \
+          curl -sS -vvv -X PUT \
             -H "Authorization: Bearer ${JFROG_TOKEN}" \
-            "${JF_URL}/artifactory/example-repo-local/test.txt"
+            -H "Content-Type: application/json" \
+            -d '{
+              "rclass": "local",
+              "packageType": "generic"
+            }' \
+            "${JF_URL}/artifactory/api/repositories/test-admin-github-actions-repo"
+
