@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 env:
-  JF_URL: https://andreygra.jfrog.io
+  JF_URL: https://elinaf.jfrog.io
 
 jobs:
   repro:
@@ -17,7 +17,7 @@ jobs:
       - uses: jfrog/setup-jfrog-cli@v5.0.0
         id: jfrog-auth
         with:
-          oidc-provider-name: noffar-test
+          oidc-provider-name: ronma
           oidc-audience: jf
 
       - env:
