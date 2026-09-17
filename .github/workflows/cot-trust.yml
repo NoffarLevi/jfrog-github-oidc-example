@@ -1,24 +1,45 @@
-name: oidc-poc
+name: Send OIDC Token to External Trigger
+
 on:
-    push:
-        branches:
-            - '*'
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows you to run this manually from the Actions tab
+
 jobs:
-    auth:
-        permissions:
-            contents: read
-            id-token: write
-        runs-on: ubuntu-latest
-        steps:
-            - name: Get id token
-              run: |
-                  ID_TOKEN=$(curl -sLS -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-                  "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=ronma" | jq .value | tr -d '"')
-                  echo "ID_TOKEN=${ID_TOKEN}" >> $GITHUB_ENV
-            - name: Exchange token with access
-              env:
-                  ID_TOKEN: ${{env.ID_TOKEN}}
-                  JFROG_PLATFORM_URL: http://172.16.1.15:8082
-              run: |
-                  ACCESS_TOKEN=$(curl -XPOST -H "Content-Type: application/json" "http://172.16.1.15:8082/access/api/v1/oidc/token" -d "{\"grant_type\": \"urn:ietf:params:oauth:grant-type:token-exchange\", \"subject_token_type\":\"urn:ietf:params:oauth:token-type:id_token\", \"subject_token\": \"${ID_TOKEN}\", \"provider_name\": \"ronma\"}" | jq .access_token | tr -d '"')
-                  echo "ACCESS_TOKEN=${ACCESS_TOKEN}" >> $GITHUB_ENV
+  trigger-external-system:
+    runs-on: ubuntu-latest
+    
+    # CRITICAL: This permission block is required to generate the OIDC token
+    permissions:
+      id-token: write
+      contents: read 
+      
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Fetch GitHub OIDC Token
+        id: get_token
+        run: |
+          # Request the OIDC token from GitHub's internal provider
+          # The audience must match what your JFrog identity mapping expects
+          OIDC_TOKEN=$(curl -sLS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=jfrog" | jq -r '.value')
+          
+          # Mask the token so it is redacted if accidentally printed in the logs
+          echo "::add-mask::$OIDC_TOKEN"
+          
+          # Pass the token to the next step via GitHub outputs
+          echo "oidc_token=$OIDC_TOKEN" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger External System
+        env:
+          # Store your external system's URL securely in GitHub Actions Secrets
+          EXTERNAL_WEBHOOK_URL: ${{ secrets.EXTERNAL_WEBHOOK_URL }} 
+        run: |
+          # Send the token to your external system
+          # WARNING: Ensure EXTERNAL_WEBHOOK_URL is HTTPS to prevent interception
+          curl -X POST "$EXTERNAL_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{\"subject_token\": \"${{ steps.get_token.outputs.oidc_token }}\", \"repository\": \"${{ github.repository }}\"}"
