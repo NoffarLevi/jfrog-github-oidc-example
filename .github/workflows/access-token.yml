@@ -19,8 +19,16 @@ jobs:
         with:
           oidc-provider-name: ronma
           oidc-audience: jf
+            
+      - name: Decode JFrog token scope
+        env:
+          JFROG_TOKEN: ${{ steps.jfrog-auth.outputs.oidc-token }}
+        run: |
+          echo "${JFROG_TOKEN}" | cut -d '.' -f2 | base64 -d 2>/dev/null | jq .
 
-      - env:
+
+      - name: Call Artifactory
+        env:
           JFROG_TOKEN: ${{ steps.jfrog-auth.outputs.oidc-token }}
         run: |
           echo "Token length: ${#JFROG_TOKEN}"
