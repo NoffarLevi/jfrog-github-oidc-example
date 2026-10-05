@@ -16,6 +16,16 @@ jobs:
             "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=jf" | jq .value | tr -d '"')
           echo "ID_TOKEN=${ID_TOKEN}" >> $GITHUB_ENV
 
+      - name: Debug - show raw GitHub OIDC claims
+        env:
+          ID_TOKEN: ${{ env.ID_TOKEN }}
+        run: |
+          PAYLOAD=$(echo "$ID_TOKEN" | cut -d '.' -f2)
+          MOD=$(( ${#PAYLOAD} % 4 ))
+          if [ $MOD -eq 2 ]; then PAYLOAD="${PAYLOAD}=="; fi
+          if [ $MOD -eq 3 ]; then PAYLOAD="${PAYLOAD}="; fi
+          echo "$PAYLOAD" | tr '_-' '/+' | base64 -d 2>/dev/null | jq .
+
       - name: Exchange token with access
         env:
           ID_TOKEN: ${{ env.ID_TOKEN }}
