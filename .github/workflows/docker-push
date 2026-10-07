@@ -1,0 +1,38 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches: [main]
+
+env:
+  JFROG_URL:elinaf.jfrog.io  
+  REPO_KEY: noffarl-docker-local
+  IMAGE_NAME: my-app
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Artifactory
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.JFROG_URL }}
+          username: noffarl    # fine to hardcode if you want
+          password: cmVmdGtuOjAxOjE3OTE3NDU0NTk6TFJNa3ltbGxXSUdlQnRWMjNzTlJmNXFZeVFk   # keep this as a secret
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          provenance: mode=max
+          tags: ${{ env.JFROG_URL }}/${{ env.REPO_KEY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
