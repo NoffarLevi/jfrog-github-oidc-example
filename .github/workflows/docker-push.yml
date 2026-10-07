@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 env:
-  JFROG_URL:elinaf.jfrog.io  
+  JFROG_URL: elinaf.jfrog.io  
   REPO_KEY: noffarl-docker-local
   IMAGE_NAME: my-app
 
