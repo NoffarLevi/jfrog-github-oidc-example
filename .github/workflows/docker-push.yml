@@ -7,7 +7,7 @@ on:
 env:
   JFROG_URL: elinaf.jfrog.io  
   REPO_KEY: noffarl-docker-local
-  IMAGE_NAME: my-app
+  IMAGE_NAME: my-app-np
 
 permissions:
   contents: read
@@ -34,5 +34,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          provenance: mode=max
           tags: ${{ env.JFROG_URL }}/${{ env.REPO_KEY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
