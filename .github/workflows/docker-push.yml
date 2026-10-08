@@ -24,7 +24,7 @@ jobs:
         with:
           registry: ${{ env.JFROG_URL }}
           username: noffarl    # fine to hardcode if you want
-          password: cmVmdGtuOjAxOjE3OTE3NDU0NTk6TFJNa3ltbGxXSUdlQnRWMjNzTlJmNXFZeVFk   # keep this as a secret
+          password:    # keep this as a secret
 
       - uses: docker/setup-buildx-action@v4
 
