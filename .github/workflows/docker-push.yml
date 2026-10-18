@@ -34,4 +34,5 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
+          provenance: true
           tags: ${{ env.JFROG_URL }}/${{ env.REPO_KEY }}/${{ env.IMAGE_NAME }}:1.0.0
